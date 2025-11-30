@@ -5,10 +5,13 @@ export enum TimerMode {
   CUSTOM = 'CUSTOM'
 }
 
+export type ResourceType = 'VIDEO' | 'BLOG' | 'DOCUMENTATION' | 'ARTICLE' | 'OTHER';
+
 export interface Resource {
   id: string;
   url: string;
   title: string;
+  type: ResourceType;
 }
 
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'ON_HOLD' | 'DONE';

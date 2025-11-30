@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { SessionLog, TimerMode } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -55,9 +55,13 @@ export const generateTopicSuggestions = async (
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Suggest 5 advanced sub-topics or related skills for someone learning "${interest}". Return ONLY a JSON array of strings.`,
+      contents: `Suggest 5 advanced sub-topics or related skills for someone learning "${interest}".`,
       config: {
         responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING }
+        }
       }
     });
 

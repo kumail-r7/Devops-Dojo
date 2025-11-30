@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { SessionLog, TimerMode } from '../types';
-import { History, Clock, Tag, Calendar, Zap, Coffee, User as UserIcon, Star, Link, CheckSquare, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { SessionLog, TimerMode, ResourceType } from '../types';
+import { History, Clock, Tag, Calendar, Zap, Coffee, User as UserIcon, Star, Link, CheckSquare, ChevronDown, ChevronUp, ExternalLink, Video, BookOpen, FileText, Newspaper, MoreHorizontal } from 'lucide-react';
 
 interface SessionHistoryListProps {
   logs: SessionLog[];
@@ -47,6 +47,16 @@ const HistoryItem: React.FC<{ log: SessionLog }> = ({ log }) => {
       case TimerMode.SHORT_BREAK: return <Coffee className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />;
       case TimerMode.LONG_BREAK: return <UserIcon className="w-3 h-3 text-blue-500 dark:text-blue-400" />;
       case TimerMode.CUSTOM: return <Star className="w-3 h-3 text-pink-500 dark:text-pink-400" />;
+    }
+  };
+
+  const getResourceTypeConfig = (t: ResourceType) => {
+    switch (t) {
+      case 'VIDEO': return { color: 'text-red-500 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/30', icon: <Video className="w-3 h-3" /> };
+      case 'BLOG': return { color: 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-900/30', icon: <BookOpen className="w-3 h-3" /> };
+      case 'DOCUMENTATION': return { color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-900/30', icon: <FileText className="w-3 h-3" /> };
+      case 'ARTICLE': return { color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-900/30', icon: <Newspaper className="w-3 h-3" /> };
+      default: return { color: 'text-slate-600 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700', icon: <Link className="w-3 h-3" /> };
     }
   };
 
@@ -109,14 +119,19 @@ const HistoryItem: React.FC<{ log: SessionLog }> = ({ log }) => {
                             <Link className="w-3 h-3" /> Resources
                         </h5>
                         <ul className="space-y-1">
-                            {log.resources.map(res => (
+                            {log.resources.map(res => {
+                                const config = getResourceTypeConfig(res.type || 'OTHER');
+                                return (
                                 <li key={res.id}>
-                                    <a href={res.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:underline">
-                                        <ExternalLink className="w-3 h-3 text-slate-400" />
-                                        {res.title}
+                                    <a href={res.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:underline group/link">
+                                        <div className={`p-0.5 rounded ${config.color.split(' ').filter(c => c.startsWith('bg') || c.startsWith('text')).join(' ')}`}>
+                                            {config.icon}
+                                        </div>
+                                        <span>{res.title}</span>
+                                        <ExternalLink className="w-2.5 h-2.5 opacity-0 group-hover/link:opacity-100 transition-opacity" />
                                     </a>
                                 </li>
-                            ))}
+                            )})}
                         </ul>
                     </div>
                 )}
